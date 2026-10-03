@@ -17,7 +17,7 @@ public class ElevatorSystem {
     public Elevator requestElevator(ExternalRequest request)
     {
         Elevator elevator=schedulingAlgorithm.getElevator(elevatorList,request);
-        elevator.assignRequest(request);
+        boolean isAssigned=elevator.assignRequest(request);
         return elevator;
     }
 

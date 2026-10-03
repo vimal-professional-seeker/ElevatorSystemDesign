@@ -40,11 +40,11 @@ public class Elevator implements Runnable {
                 if(currentDirection == Direction.DOWN || currentDirection == Direction.IDLE){
                     currentDirection = Direction.UP;
                 }
-                step();
                 if(upStops.peek() == currentFloor){
                     log.info("Elevator No. " + elevatorId + " Arrived At Floor " + currentFloor );
                     upStops.poll();
                 }
+                else step();
             }
 
             while(!downStops.isEmpty()){
@@ -52,21 +52,23 @@ public class Elevator implements Runnable {
                 if(currentDirection == Direction.UP || currentDirection == Direction.IDLE){
                     currentDirection = Direction.DOWN;
                 }
-                step();
                 if(downStops.peek() == currentFloor){
                     log.info("Elevator No. " + elevatorId + " Arrived At Floor " + currentFloor );
                     downStops.poll();
                 }
+                else step();
             }
             currentDirection = Direction.IDLE;
         }
     }
 
-    public void assignRequest(ExternalRequest request) {
+    public boolean assignRequest(ExternalRequest request) {
         if (currentFloor > request.floor) {
             downStops.add(request.floor);
+            return true;
         } else {
             upStops.add(request.floor);
+            return true;
         }
     }
 
@@ -78,7 +80,7 @@ public class Elevator implements Runnable {
         }
     }
 
-    public void step() {
+    public synchronized void step() {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
